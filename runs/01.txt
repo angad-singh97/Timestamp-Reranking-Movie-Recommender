@@ -1,0 +1,93 @@
+Precision of Early SVD Model: 97.827868852459
+Diversity in Early SVD Top N: 250 unique items found.
+Precision of Early KNN Model: 99.95901639344262
+Diversity in Early KNN Top N: 105 unique items found.
+Precision of Early Hybrid Model: 83.51475409836065
+Diversity in Early Hybrid Top N: 238 unique items found.
+______________________________________________
+Precision of Early SVD Model: 98.14207650273224
+Diversity in Early SVD Top N: 280 unique items found.
+Precision of Early KNN Model:
+Diversity in Early KNN Top N: 135 unique items found.
+Precision of Early Hybrid Model: 82.3016393442623
+Diversity in Early Hybrid Top N: 267 unique items found.
+
+______________________________________________
+
+Precision of Early SVD Model: 98.27868852459018
+Diversity in Early SVD Top N: 301 unique items found.
+Precision of Early KNN Model: 98.46994535519126
+Diversity in Early KNN Top N: 193 unique items found.
+Precision of Early Hybrid Model: 84.35409836065574
+Diversity in Early Hybrid Top N: 338 unique items found.
+
+_____________________________________________
+
+Precision of Early SVD Model: 97.96448087431695
+Diversity in Early SVD Top N: 300 unique items found.
+Precision of Early KNN Model: 97.54098360655738
+Diversity in Early KNN Top N: 205 unique items found.
+Precision of Early Hybrid Model: 83.60655737704919
+Diversity in Early Hybrid Top N: 357 unique items found.
+
+_____________________________________________________
+
+Precision of Early SVD Model: 98.04644808743168
+Diversity in Early SVD Top N: 306 unique items found.
+Precision of Early KNN Model: 95.69672131147541
+Diversity in Early KNN Top N: 189 unique items found.
+Precision of Early Hybrid Model: 84.01311475409837
+Diversity in Early Hybrid Top N: 357 unique items found.
+
+______________________________________________
+
+Precision of Early SVD Model: 98.29234972677597
+Diversity in Early SVD Top N: 306 unique items found.
+Precision of Early KNN Model: 92.37704918032787
+Diversity in Early KNN Top N: 209 unique items found.
+Precision of Early Hybrid Model: 86.09180327868853
+Diversity in Early Hybrid Top N: 370 unique items found.
+
+______________________________________________________
+
+Precision of Early SVD Model: 98.0327868852459
+Diversity in Early SVD Top N: 325 unique items found.
+Precision of Early KNN Model: 90.62841530054644
+Diversity in Early KNN Top N: 263 unique items found.
+Precision of Early Hybrid Model: 85.1016393442623
+Diversity in Early Hybrid Top N: 385 unique items found.
+
+_________________________________________________________
+
+Precision of Early SVD Model: 98.07377049180327
+Diversity in Early SVD Top N: 348 unique items found.
+Precision of Early KNN Model: 88.8934426229508
+Diversity in Early KNN Top N: 259 unique items found.
+Precision of Early Hybrid Model: 87.22622950819672
+Diversity in Early Hybrid Top N: 405 unique items found.
+
+_______________________________________
+Precision of Early SVD Model: 98.0464480874317
+Diversity in Early SVD Top N: 363 unique items found.
+Precision of Early KNN Model: 87.56830601092894
+Diversity in Early KNN Top N: 288 unique items found.
+Precision of Early Hybrid Model: 91.16065573770491
+Diversity in Early Hybrid Top N: 399 unique items found.
+________________________________________________________
+Precision of Early SVD Model: 98.01912568306011
+Diversity in Early SVD Top N: 355 unique items found.
+Precision of Early KNN Model: 87.19945355191258
+Diversity in Early KNN Top N: 288 unique items found.
+Precision of Early Hybrid Model: 92.8327868852459
+Diversity in Early Hybrid Top N: 383 unique items found.
+_________________________________________________________
+Precision of Early SVD Model: 97.8825136612022
+Diversity in Early SVD Top N: 374 unique items found.
+Precision of Early KNN Model: 86.81693989071039
+Diversity in Early KNN Top N: 267 unique items found.
+Precision of Early Hybrid Model: 92.14426229508197
+Diversity in Early Hybrid Top N: 387 unique items found.
+
+
+
+
