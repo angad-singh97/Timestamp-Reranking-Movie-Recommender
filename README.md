@@ -1,10 +1,11 @@
-# temporal-reranking-movie-recommender
+Temporal Re-Ranking Based Movie Recommender System 🎬✨
 
-Movie Recommender System 🎬✨
-Overview:
+**Overview:**
+
 An advanced movie recommendation system built using collaborative filtering techniques. Through this project, we harness the power of both matrix factorization (SVD) and memory-based (KNNBaseline) algorithms, and even introduce a hybrid approach. We simulate user interactions over time, enriching our data, and continuously retrain our models for more accurate and timely recommendations.
 
-Features:
+**Features:**
+
 Dual Recommender Engines: Employs both SVD and KNNBaseline recommendation algorithms from the surprise library.
 
 Hybrid Recommendation: Merges the strength of both algorithms for enhanced user recommendations.
@@ -15,7 +16,8 @@ Timestamped Recommendations: Recommendations are mindful of the last rated date,
 
 Evaluation Metrics: Implements precision and diversity metrics to gauge recommendation quality.
 
-How It Works:
+**How It Works:**
+
 Initialization: Load the movie ratings dataset and train the recommendation models.
 
 Recommendation Generation: Based on trained models, generate top-N recommendations for each user.
