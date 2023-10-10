@@ -13,23 +13,36 @@ class Controller:
         )
         self.recommender = None
 
-    def load_data(self):
-        self.datahandler.load_data()
+    # Initialize data handler
+    data_handler = DataHandler('ml-latest-small/ratings_fixed_main.csv', 
+                               'ml-latest-small/movies_fixed_main.csv', 
+                               'ml-latest-small/ratings_fixed_main.csv')
+    
+    # Load datasets
+    data_handler.load_data()
+    
+    # Build training and test sets
+    training_set = data_handler.build_trainset()
+    testing_set = data_handler.build_testset()
+    
+    # Define both algorithms and fit them to the training set
+    
+    svd_recommender = Recommender(training_set, algorithm_type='SVD')
+    svd_recommender.train()
 
-    def train_model(self, algorithm_type=None):
-        if not algorithm_type:
-            algorithm_type = CONFIG['DEFAULT_ALGORITHM']
-        
-        trainset = self.datahandler.build_trainset()
-        self.recommender = Recommender(trainset, algorithm_type)
-        self.recommender.train()
+    knn_recommender = Recommender(training_set, algorithm_type='KNNBaseline')
+    knn_recommender.train()
 
-    def get_recommendations(self, n=None):
-        if not n:
-            n = CONFIG['TOP_N']
-        
-        testset = self.datahandler.build_testset()
-        predictions = self.recommender.predict(testset)
-        return get_top_n(predictions, n)
+    # Test algorithms
+    svd_predictions = svd_recommender.predict(testing_set)
+    knn_predictions = knn_recommender.predict(testing_set)
 
-    # more methods - saving model, updating dataset
+    
+    # Retrieve top N predictions
+    svd_top_recommendations = get_top_n(svd_predictions, n=50)
+    knn_top_recommendations = get_top_n(knn_predictions, n=50)
+    
+    # Update movie and ratings dataframes
+    updated_movies_df = data_handler.update_movies()
+    updated_ratings_df = data_handler.update_ratings()
+
