@@ -16,7 +16,6 @@ class DataHandler:
     def load_data(self):
         """Load the data from file."""
         self.data = Dataset.load_from_file(self.data_path, reader=self.reader)
-        self.trainset = self.data.build_full_trainset()
 
     def build_trainset(self):
         """Construct the full trainset."""

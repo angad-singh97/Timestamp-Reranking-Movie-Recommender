@@ -5,104 +5,11 @@ Created on Sun Jan 26 23:07:01 2020
 @author: Angad
 """
 
-def single_prec(recom_list,threshold):
-    count = 0
-    short_list = recom_list[0:12]
- 
-    for rl in short_list:
-        #print(rl[1])
-        if rl[1]>=threshold:
-            count = count + 1
 
-    recom_list_size = len(short_list)
-
-    return count/recom_list_size
-
-def single_prec_hybrid(recom_list,threshold):
-    count = 0
-    short_list = recom_list[0:25]
- 
-    for rl in short_list:
-        #print(rl[1])
-        if rl[1]>=threshold:
-            count = count + 1
-
-    recom_list_size = len(short_list)
-
-    return count/recom_list_size
-
-
-def global_prec(user_count,func):
-    
-    global_res = 0
-    for i in range(1,user_count+1):
-        i2 = str(i)
-        curr = top_n[i2]
-        curr_prec = func(curr,3.5)
-        #print(curr_prec)
-        global_res = global_res + curr_prec*100
-    
-    return global_res/user_count
-
-def global_prec2(user_count,func):
-    
-    global_res = 0
-    for i in range(1,user_count+1):
-        i2 = str(i)
-        curr = top_n2[i2]
-        curr_prec = func(curr,4)
-        #print(curr_prec)
-        global_res = global_res + curr_prec*100
-    
-    return global_res/user_count
-#
-def global_prec_hybrid(user_count,func):
-    
-    global_res = 0
-    for i in range(1,user_count+1):
-        i2 = str(i)
-        curr = top_n_hybrid[i2]
-        curr_prec = func(curr,3.5)
-        #print(curr_prec)
-        global_res = global_res + curr_prec*100
-    
-    return global_res/user_count
-
-def diversity_in_top_n(user_count):
-	global_res = set()
-	for i in range(1,user_count+1):
-		i2 = str(i)
-		curr = top_n[i2]
-		for mv in curr[0:5]:
-			global_res.add(mv[0])
-	return len(global_res)
-
-def diversity_in_top_n2(user_count):
-	global_res = set()
-	for i in range(1,user_count+1):
-		i2 = str(i)
-		curr = top_n2[i2]
-		for mv in curr[0:5]:
-			global_res.add(mv[0])
-	return len(global_res)
-    
-#
-def diversity_in_top_n_hybrid(user_count):
-	global_res = set()
-	for i in range(1,user_count+1):
-		i2 = str(i)
-		curr = top_n_hybrid[i2]
-		for mv in curr[0:5]:
-			global_res.add(mv[0])
-	return len(global_res)
-
-
-
-def spliceLists(lst1, lst2): 
-    return [sub[item] for item in range(len(lst2)) 
-                      for sub in [lst1, lst2]] 
 
 top_n_hybrid = {}
+
+top_n_hybrid_sorted = {}
 
 
 
@@ -152,34 +59,7 @@ print("Diversity in Early KNN Top N:",diversity_in_top_n2(len(top_n2)),"unique i
 print("Precision of Early Hybrid Model:", global_prec_hybrid(len(top_n_hybrid),single_prec_hybrid))
 print("Diversity in Early Hybrid Top N:",diversity_in_top_n_hybrid(len(top_n_hybrid)),"unique items found.")
     
-def sort_list(list1, list2): 
-  
-    zipped_pairs = zip(list2, list1) 
-  
-    z = [x for _, x in sorted(zipped_pairs)] 
-      
-    return z 
 
-top_n_hybrid_sorted = {}
-
-def sortByLastRatedDate(recom_list):
-    
-    for i in range(1,611):
-        curr_user = str(i)
-        
-        
-        curr_list = recom_list[curr_user]
-        
-        datesList = []
-        for movie in curr_list:
-            curr_mv_id = int(movie[0])
-         
-            curr_mv_date = Movies_fixed.at[curr_mv_id-1,'LastRated']
-            datesList.append(curr_mv_date)
-        
-        z_list = sort_list(curr_list,datesList)
-        
-        recom_list[curr_user] = z_list
     
 sortByLastRatedDate(top_n)
 sortByLastRatedDate(top_n2)
