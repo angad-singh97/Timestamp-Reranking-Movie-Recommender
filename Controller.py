@@ -59,29 +59,59 @@ class Controller:
     sortByLastRatedDate(knn_top_recommendations)
     sortByLastRatedDate(combined_recommendations)
     
-    #simulation of users, recompute model, then re-run metrics
-    lastRatedTimestamp = getLastRatedTimestamp()
-    
-    next_timestamp = int(datetime.timestamp(lastRatedTimestamp + timedelta(days=7)))
-    
-    sampleUserSet = getUserSampleSet()
-    
-    ratingsRange = getRatingsRange()
-    
-    
-    
-    
+    run_simulation()
 
     
-    
-    
-    #repeat n-times
-    
-    
-    
-    top_n_hybrid_sorted = {}
-    #todo - likely need to pass to datahandler
-    Movies_fixed=pd.read_csv("ml-latest-small/movies_fixed.csv",encoding="ISO-8859-1")
-    Ratings_fixed=pd.read_csv("ml-latest-small/ratings_fixed.csv",encoding="ISO-8859-1")
+    def run_simulation(self, sample_users_list, top_n_hybrid, iterations):
+        choice = input("Choose simulation type: \n1. Simple Usage Simulation \n2. Slot-based Usage Simulation\n")
         
+        if choice == "1":
+            self.simple_usage_simulation(sample_users_list, top_n_hybrid, iterations)
+        elif choice == "2":
+            self.slot_based_simulation(sample_users_list, top_n_hybrid, iterations)
+        else:
+            print("Invalid choice! Please select 1 or 2.")
+    
+    def simple_usage_simulation(self,sample_users_list, top_n_hybrid, iterations):
+        for i in range(iterations):
+            # Your logic or code to run during each iteration
+            print(f"Iteration number {i + 1}")
+            
+            #simulation of users, recompute model, then re-run metrics
+            lastRatedTimestamp = getLastRatedTimestamp()
+            
+            next_timestamp = int(datetime.timestamp(lastRatedTimestamp + timedelta(days=7)))
+            
+            sampleUserSet = getUserSampleSet()
+            
+            ratingsRange = getRatingsRange()
+            
+            simulateUsageSimple(sample_users_list, top_n_hybrid, next_timestamp)
+            
+            display_metrics("SVD, Iteration {i+1}", svd_recommendations)
+            display_metrics("KNN, Iteration {i+1}", knn_recommendations)
+            display_metrics("Hybrid, Iteration {i+1}", hybrid_recommendations)
+
+
+    
+    def slot_based_simulation(self, sample_users_list, top_n_hybrid, iterations):
+        for i in range(iterations):
+            # Your logic or code to run during each iteration
+            print(f"Iteration number {i + 1}")
+            
+            #simulation of users, recompute model, then re-run metrics
+            lastRatedTimestamp = getLastRatedTimestamp()
+            
+            next_timestamp = int(datetime.timestamp(lastRatedTimestamp + timedelta(days=7)))
+            
+            sampleUserSet = getUserSampleSet()
+            
+            ratingsRange = getRatingsRange()
+            
+            simulateUsageSlotBased(sample_users_list, top_n_hybrid, next_timestamp)
+            
+            display_metrics("SVD, Iteration {i+1}", svd_recommendations)
+            display_metrics("KNN, Iteration {i+1}", knn_recommendations)
+            display_metrics("Hybrid, Iteration {i+1}", hybrid_recommendations)
+            
 

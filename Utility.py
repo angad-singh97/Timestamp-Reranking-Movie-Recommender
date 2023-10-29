@@ -114,39 +114,6 @@ def diversity_in_top_n_hybrid(user_count, top_n_hybrid):
 
 
 
-# =============================================================================
-# def spliceLists(list1, list2):
-#     top_n_hybrid = {}
-#     for i in range(1,len(list1)+1):
-#         temp_list = spliceList(list1[str(i)],list2[str(i)])
-#         top_n_hybrid[str(i)] = temp_list 
-#     for i in range(1,len(top_n_hybrid)+1):
-#         list_of_lists = [list(elem) for elem in top_n_hybrid[str(i)]]
-#         top_n_hybrid[str(i)] = list_of_lists
-#         
-#     #MODEL 1 IS SVD
-#     #    MODEL 2 IS KNN
-#     
-#     for i in range(1,len(top_n_hybrid)+1):
-#         
-#         for j in range(len(top_n_hybrid['1'])):
-#             if j%2 == 0:
-#                 top_n_hybrid[str(i)][j].append(1)
-#             else:
-#                 top_n_hybrid[str(i)][j].append(2)
-#                 
-#     for i in range(1,len(top_n_hybrid)+1):
-#         i2 = str(i)
-#         curr_list = top_n_hybrid[i2]
-#         for mv in curr_list:
-#             if mv[2] == 2:
-#                 #print("oh no")
-#                 new_pred_val = algo.predict(i2,mv[0],3.4)
-#                 mv[1] = new_pred_val[3]
-#                 mv[2] = 1
-#     return top_n_hybrid
-# =============================================================================
-
 def combine_and_adjust_recommendations(list1, list2, svd_algo):
     """
     Combines two recommendation lists (SVD and KNN), tags them with their origin, 
@@ -259,38 +226,37 @@ def simulateUsage(sample_users_list, top_n_hybrid, my_timestamp):
     timestamp_list = []
     
     for user in sample_users_list:
-        curr_recom_list = top_n_hybrid[str(user)][0:25]
-        #now select random movies from this
-        #but from where? top 10% - 30%
-        sample_range = [x for x in range(10,31)]
-        sample_perc = random.sample(sample_range,1)
-        sample_count = int((sample_perc[0]/100)*len(curr_recom_list))  
-        sample_recom_list = random.sample(curr_recom_list,sample_count)
+        # Retrieve the first 25 recommendations for the given user
+        user_recommendations = top_n_hybrid[str(user)][:25]
         
-        #print(user)
-        for recom in sample_recom_list:
-            push_user_id = int(user)
-            push_movie_id = int(recom[0])
-            push_rating = float(round(recom[1],1))# challenge your assumption, make them rate differently sometimes?
-            push_timestamp = my_timestamp
-            
-            userId_list.append(push_user_id)
-            movieId_list.append(push_movie_id)
-            rating_list.append(push_rating)
-            timestamp_list.append(push_timestamp)
-            
-            #curr_rating=round(recom[1],1)
-            #curr_rating = random.sample(sample_ratings,1)[0]
-            #print("Movie ID ",recom[0]," Rating ",recom[1]," Rated ",curr_rating)
-        #print(" ")
-            
-    ratingDict = {}
+        # Determine a random percentage between 10% and 30%
+        percentage_options = list(range(10, 31))
+        selected_percentage = random.choice(percentage_options)
+        
+        # Calculate the number of recommendations to sample based on the selected percentage
+        num_to_sample = int((selected_percentage / 100) * len(user_recommendations))
+        
+        # Randomly sample the determined number of recommendations
+        random_recommendation_subset = random.sample(user_recommendations, num_to_sample)
+
     
-    ratingDict["userId_list"] = userId_list
-    ratingDict["movieId_list"] = movieId_list
-    ratingDict["rating_list"] = rating_list
-    ratingDict["timestamp_list"] = timestamp_list
-    return ratingDict
+        for recommendation in random_recommendation_subset:
+            user_id = int(user)
+            movie_id = int(recommendation[0])
+            rating = float(round(recommendation[1], 1))
+        
+            userId_list.append(user_id)
+            movieId_list.append(movie_id)
+            rating_list.append(rating)
+            timestamp_list.append(my_timestamp)
+                   
+    rating_data = {
+        "userId_list": userId_list,
+        "movieId_list": movieId_list,
+        "rating_list": rating_list,
+        "timestamp_list": timestamp_list
+    }
+    return rating_data
 
 def getLastRatedTimestamp():
     with open('config/metadata.txt','r') as json_file:
