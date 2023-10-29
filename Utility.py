@@ -219,7 +219,7 @@ def getRatingsRange():
     for i in range(0,len(sample_ratings)):
         sample_ratings[i] = round(sample_ratings[i],1)
 
-def simulateUsage(sample_users_list, top_n_hybrid, my_timestamp):
+def simulateUsageSimple(sample_users_list, top_n_hybrid, my_timestamp):
     userId_list = []
     movieId_list = []
     rating_list = []
