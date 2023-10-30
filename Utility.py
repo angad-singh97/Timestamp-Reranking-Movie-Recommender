@@ -5,8 +5,8 @@ import random
 from random import sample
 from datetime import datetime
 from datetime import timedelta
+import pandas as pd
 
-"""Return the top N recommendations for each user from a set of predictions."""
 def get_top_n(predictions, n=10):
 
     # First map the predictions to each user.
@@ -257,6 +257,162 @@ def simulateUsageSimple(sample_users_list, top_n_hybrid, my_timestamp):
         "timestamp_list": timestamp_list
     }
     return rating_data
+
+
+
+def split_list(input_list):
+    list_length = len(input_list)
+    result_list = []
+    quarter_length = int(0.25 * list_length)
+    start_pos = 0
+    end_pos = quarter_length
+    
+    for _ in range(4):
+        sublist = input_list[start_pos:end_pos]
+        result_list.append(sublist)
+        start_pos += quarter_length
+        end_pos += quarter_length
+
+    return result_list
+
+def simulateUsageSlotBased(sample_users_list, top_n_hybrid, my_timestamp, Movies_fixed):
+
+    timestamps = []
+    
+    for days in range(0, 28, 7):
+        new_datetime = my_timestamp + timedelta(days=days)
+        timestamp = datetime.timestamp(new_datetime)
+        timestamps.append(timestamp)
+        
+    top_n_a = {}
+    top_n_b = {}
+    top_n_c = {}
+    top_n_d = {}
+
+    for i in range(1,611):
+        curr_user = str(i)
+        curr_list = top_n_hybrid[curr_user]
+        #I need to sort this by date before the split up
+            
+        curr_list_split = splitList(curr_list)
+            
+        top_n_a[curr_user] = curr_list_split[0]
+        top_n_b[curr_user] = curr_list_split[1]
+        top_n_c[curr_user] = curr_list_split[2]
+        top_n_d[curr_user] = curr_list_split[3]
+        
+    # User IDs from 1 to 610
+    user_ids = [x for x in range(1, 611)]
+    
+    # Random sample percentage (45-70%)
+    sample_percentage = random.sample(range(45, 71), 1)[0]
+    
+    # Calculate sample size based on percentage
+    sample_user_count = int((sample_percentage / 100) * len(user_ids))
+    
+    # Randomly select users
+    sampled_users = random.sample(user_ids, sample_user_count)
+    
+    # Ratings from 1.0 to 5.0 in steps of 0.1
+    sample_ratings = [round(x * 0.1, 1) for x in range(10, 51)]
+    
+    # User IDs from 1 to 200
+    sample_users_list = [i for i in range(1, 201)]
+        
+    userId_list = []
+    movieId_list = []
+    rating_list = []
+    timestamp_list = []
+    
+
+    for timestamp in timestamps:
+        for user_id in sample_users_list:
+            recommended_movies = top_n_d[str(user_id)]#need to loop over a,b,c,d
+            
+            # Randomly select a sample percentage from 5% to 10%
+            sample_percentage = random.sample(range(5, 11), 1)
+            sample_count = int((sample_percentage[0] / 100) * len(recommended_movies))
+            
+            # Randomly sample movies from the recommendations
+            sampled_movies = random.sample(recommended_movies, sample_count)
+            
+            # Limit the number of recommendations to 10
+            sampled_movies = recommended_movies[:10]
+            
+            for movie in sampled_movies:
+                push_user_id = int(user_id)
+                push_movie_id = int(movie[0])
+                push_rating = float(round(movie[1], 1))
+                push_timestamp = int(timestamp)
+                
+                # Append data to lists
+                userId_list.append(push_user_id)
+                movieId_list.append(push_movie_id)
+                rating_list.append(push_rating)
+                timestamp_list.append(push_timestamp)
+                
+                # Update the movie timestamp in Movies_fixed DataFrame
+                movie_row_id = push_movie_id - 1
+                Movies_fixed.at[movie_row_id, 'timestamp'] = push_timestamp
+                
+                # Print movie information
+                current_rating = round(movie[1], 1)
+                print("Movie ID:", movie[0], "Rating:", movie[1], "Rated:", current_rating)
+            print(" ")
+
+    
+    for user in sample_users_list:
+        # Retrieve the first 25 recommendations for the given user
+        user_recommendations = top_n_hybrid[str(user)][:25]
+        
+        # Determine a random percentage between 10% and 30%
+        percentage_options = list(range(10, 31))
+        selected_percentage = random.choice(percentage_options)
+        
+        # Calculate the number of recommendations to sample based on the selected percentage
+        num_to_sample = int((selected_percentage / 100) * len(user_recommendations))
+        
+        # Randomly sample the determined number of recommendations
+        random_recommendation_subset = random.sample(user_recommendations, num_to_sample)
+
+    
+        for recommendation in random_recommendation_subset:
+            user_id = int(user)
+            movie_id = int(recommendation[0])
+            rating = float(round(recommendation[1], 1))
+        
+            userId_list.append(user_id)
+            movieId_list.append(movie_id)
+            rating_list.append(rating)
+            timestamp_list.append(my_timestamp)
+                   
+    rating_data = {
+        "userId_list": userId_list,
+        "movieId_list": movieId_list,
+        "rating_list": rating_list,
+        "timestamp_list": timestamp_list
+    }
+    return rating_data
+
+
+def appendRatings(new_rating_data, existing_ratings):
+    appended_ratings = pd.DataFrame.from_dict(new_rating_data)
+    appended_ratings.columns = ['userId','movieId','rating','timestamp']
+    existing_ratings = existing_ratings.append(appended_ratings,ignore_index=True,sort=False) 
+    existing_ratings.to_csv("ratings_fixed_main.csv",index=None,header=True)
+    return existing_ratings
+
+def updateExternalTimestamp(my_timestamp):
+    datetime_object_write_out = datetime.fromtimestamp(my_timestamp)
+
+    dtobj = datetime_object_write_out.strftime('%Y-%m-%d')
+    with open('metadata.txt','r') as json_file:
+        json_data = json.load(json_file)
+
+    json_data['lastRatedDate'] = dtobj
+
+    with open('metadata.txt','w') as json_file:
+        json.dump(json_data, json_file)
 
 def getLastRatedTimestamp():
     with open('config/metadata.txt','r') as json_file:
