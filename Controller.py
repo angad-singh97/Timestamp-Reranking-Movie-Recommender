@@ -59,20 +59,20 @@ class Controller:
     sortByLastRatedDate(knn_top_recommendations)
     sortByLastRatedDate(combined_recommendations)
     
-    run_simulation()
+    run_simulation(sample_users_list, top_n_hybrid, iterations, data_handler)
 
     
-    def run_simulation(self, sample_users_list, top_n_hybrid, iterations):
+    def run_simulation(self, sample_users_list, top_n_hybrid, iterations, data_handler):
         choice = input("Choose simulation type: \n1. Simple Usage Simulation \n2. Slot-based Usage Simulation\n")
         
         if choice == "1":
-            self.simple_usage_simulation(sample_users_list, top_n_hybrid, iterations)
+            self.simple_usage_simulation(sample_users_list, top_n_hybrid, iterations, data_handler)
         elif choice == "2":
-            self.slot_based_simulation(sample_users_list, top_n_hybrid, iterations)
+            self.slot_based_simulation(sample_users_list, top_n_hybrid, iterations, data_handler)
         else:
             print("Invalid choice! Please select 1 or 2.")
     
-    def simple_usage_simulation(self,sample_users_list, top_n_hybrid, iterations):
+    def simple_usage_simulation(self,sample_users_list, top_n_hybrid, iterations, data_handler):
         for i in range(iterations):
             # Your logic or code to run during each iteration
             print(f"Iteration number {i + 1}")
@@ -91,10 +91,13 @@ class Controller:
             display_metrics("SVD, Iteration {i+1}", svd_recommendations)
             display_metrics("KNN, Iteration {i+1}", knn_recommendations)
             display_metrics("Hybrid, Iteration {i+1}", hybrid_recommendations)
+            
+            data_handler.update_ratings()
+            updateExternalTimestamp()
 
 
     
-    def slot_based_simulation(self, sample_users_list, top_n_hybrid, iterations):
+    def slot_based_simulation(self, sample_users_list, top_n_hybrid, iterations, data_handler):
         for i in range(iterations):
             # Your logic or code to run during each iteration
             print(f"Iteration number {i + 1}")
@@ -113,5 +116,8 @@ class Controller:
             display_metrics("SVD, Iteration {i+1}", svd_recommendations)
             display_metrics("KNN, Iteration {i+1}", knn_recommendations)
             display_metrics("Hybrid, Iteration {i+1}", hybrid_recommendations)
+            
+            data_handler.update_ratings()
+            updateExternalTimestamp()
             
 

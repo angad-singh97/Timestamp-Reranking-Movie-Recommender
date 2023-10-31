@@ -260,21 +260,6 @@ def simulateUsageSimple(sample_users_list, top_n_hybrid, my_timestamp):
 
 
 
-def split_list(input_list):
-    list_length = len(input_list)
-    result_list = []
-    quarter_length = int(0.25 * list_length)
-    start_pos = 0
-    end_pos = quarter_length
-    
-    for _ in range(4):
-        sublist = input_list[start_pos:end_pos]
-        result_list.append(sublist)
-        start_pos += quarter_length
-        end_pos += quarter_length
-
-    return result_list
-
 def simulateUsageSlotBased(sample_users_list, top_n_hybrid, my_timestamp, Movies_fixed):
 
     timestamps = []
@@ -292,7 +277,6 @@ def simulateUsageSlotBased(sample_users_list, top_n_hybrid, my_timestamp, Movies
     for i in range(1,611):
         curr_user = str(i)
         curr_list = top_n_hybrid[curr_user]
-        #I need to sort this by date before the split up
             
         curr_list_split = splitList(curr_list)
             
@@ -300,7 +284,9 @@ def simulateUsageSlotBased(sample_users_list, top_n_hybrid, my_timestamp, Movies
         top_n_b[curr_user] = curr_list_split[1]
         top_n_c[curr_user] = curr_list_split[2]
         top_n_d[curr_user] = curr_list_split[3]
-        
+    
+    top_n_data = [top_n_a, top_n_b, top_n_c, top_n_d]
+    
     # User IDs from 1 to 610
     user_ids = [x for x in range(1, 611)]
     
@@ -325,66 +311,34 @@ def simulateUsageSlotBased(sample_users_list, top_n_hybrid, my_timestamp, Movies
     timestamp_list = []
     
 
-    for timestamp in timestamps:
-        for user_id in sample_users_list:
-            recommended_movies = top_n_d[str(user_id)]#need to loop over a,b,c,d
+    for top_n_category, timestamp in zip(top_n_data, timestamps):
+        for user in sample_users_list:
+            # Retrieve the first 25 recommendations for the given user
+            user_recommendations = top_n_hybrid[str(user)][:25]
             
-            # Randomly select a sample percentage from 5% to 10%
-            sample_percentage = random.sample(range(5, 11), 1)
-            sample_count = int((sample_percentage[0] / 100) * len(recommended_movies))
+            # Determine a random percentage between 10% and 30%
+            percentage_options = list(range(10, 31))
+            selected_percentage = random.choice(percentage_options)
             
-            # Randomly sample movies from the recommendations
-            sampled_movies = random.sample(recommended_movies, sample_count)
+            # Calculate the number of recommendations to sample based on the selected percentage
+            num_to_sample = int((selected_percentage / 100) * len(user_recommendations))
             
-            # Limit the number of recommendations to 10
-            sampled_movies = recommended_movies[:10]
+            # Randomly sample the determined number of recommendations
+            random_recommendation_subset = random.sample(user_recommendations, num_to_sample)
             
-            for movie in sampled_movies:
-                push_user_id = int(user_id)
-                push_movie_id = int(movie[0])
-                push_rating = float(round(movie[1], 1))
-                push_timestamp = int(timestamp)
-                
-                # Append data to lists
-                userId_list.append(push_user_id)
-                movieId_list.append(push_movie_id)
-                rating_list.append(push_rating)
-                timestamp_list.append(push_timestamp)
+            for recommendation in random_recommendation_subset:
+                user_id = int(user)
+                movie_id = int(recommendation[0])
+                rating = float(round(recommendation[1], 1))
+            
+                userId_list.append(user_id)
+                movieId_list.append(movie_id)
+                rating_list.append(rating)
+                timestamp_list.append(timestamp)
                 
                 # Update the movie timestamp in Movies_fixed DataFrame
-                movie_row_id = push_movie_id - 1
-                Movies_fixed.at[movie_row_id, 'timestamp'] = push_timestamp
-                
-                # Print movie information
-                current_rating = round(movie[1], 1)
-                print("Movie ID:", movie[0], "Rating:", movie[1], "Rated:", current_rating)
-            print(" ")
-
-    
-    for user in sample_users_list:
-        # Retrieve the first 25 recommendations for the given user
-        user_recommendations = top_n_hybrid[str(user)][:25]
-        
-        # Determine a random percentage between 10% and 30%
-        percentage_options = list(range(10, 31))
-        selected_percentage = random.choice(percentage_options)
-        
-        # Calculate the number of recommendations to sample based on the selected percentage
-        num_to_sample = int((selected_percentage / 100) * len(user_recommendations))
-        
-        # Randomly sample the determined number of recommendations
-        random_recommendation_subset = random.sample(user_recommendations, num_to_sample)
-
-    
-        for recommendation in random_recommendation_subset:
-            user_id = int(user)
-            movie_id = int(recommendation[0])
-            rating = float(round(recommendation[1], 1))
-        
-            userId_list.append(user_id)
-            movieId_list.append(movie_id)
-            rating_list.append(rating)
-            timestamp_list.append(my_timestamp)
+                movie_row_id = movie_id - 1
+                Movies_fixed.at[movie_row_id, 'timestamp'] = timestamp
                    
     rating_data = {
         "userId_list": userId_list,
@@ -393,6 +347,23 @@ def simulateUsageSlotBased(sample_users_list, top_n_hybrid, my_timestamp, Movies
         "timestamp_list": timestamp_list
     }
     return rating_data
+
+
+def split_list(input_list):
+    list_length = len(input_list)
+    result_list = []
+    quarter_length = int(0.25 * list_length)
+    start_pos = 0
+    end_pos = quarter_length
+    
+    for _ in range(4):
+        sublist = input_list[start_pos:end_pos]
+        result_list.append(sublist)
+        start_pos += quarter_length
+        end_pos += quarter_length
+
+    return result_list
+
 
 
 def appendRatings(new_rating_data, existing_ratings):
